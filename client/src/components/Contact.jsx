@@ -10,7 +10,10 @@ import FadeInOnScroll from "./motion/FadeInOnScroll";
 
 const WEB3FORMS_ACCESS_KEY = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
 
-export default function Contact() {
+export default function Contact({
+  title = "Get in Touch",
+  subtitle = "Have an idea to implement for real? Let's create something extraordinary together.",
+}) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -110,10 +113,7 @@ export default function Contact() {
       />
 
       <div className="max-w-7xl mx-auto px-6">
-        <SectionHeading
-          title="Get in Touch"
-          subtitle="Have a project in mind? Let's create something extraordinary together."
-        />
+        <SectionHeading title={title} subtitle={subtitle} />
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 max-w-5xl mx-auto">
           {/* Contact Info */}

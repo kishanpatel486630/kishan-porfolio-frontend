@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
-import Lenis from 'lenis';
+import { useEffect, useRef } from "react";
+import Lenis from "lenis";
 
 export default function useSmoothScroll() {
   const lenisRef = useRef(null);
@@ -8,8 +8,8 @@ export default function useSmoothScroll() {
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: 'vertical',
-      gestureOrientation: 'vertical',
+      orientation: "vertical",
+      gestureOrientation: "vertical",
       smoothWheel: true,
       wheelMultiplier: 1,
       touchMultiplier: 2,
@@ -29,7 +29,7 @@ export default function useSmoothScroll() {
       const target = e.target.closest('a[href^="#"]');
       if (target) {
         e.preventDefault();
-        const id = target.getAttribute('href').slice(1);
+        const id = target.getAttribute("href").slice(1);
         const element = document.getElementById(id);
         if (element) {
           lenis.scrollTo(element, { offset: -80, duration: 1.5 });
@@ -37,11 +37,17 @@ export default function useSmoothScroll() {
       }
     };
 
-    document.addEventListener('click', handleClick);
+    document.addEventListener("click", handleClick);
+
+    const handleScrollToTop = () => {
+      lenis.scrollTo(0, { immediate: true });
+    };
+    window.addEventListener("scrollToTop", handleScrollToTop);
 
     return () => {
       lenis.destroy();
-      document.removeEventListener('click', handleClick);
+      document.removeEventListener("click", handleClick);
+      window.removeEventListener("scrollToTop", handleScrollToTop);
     };
   }, []);
 

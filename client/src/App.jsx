@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Routes, Route, useLocation } from "react-router-dom";
 import useSmoothScroll from "./hooks/useSmoothScroll";
 import Navbar from "./components/Navbar";
 import LoadingScreen from "./components/LoadingScreen";
@@ -13,6 +14,19 @@ import Education from "./components/Education";
 import About from "./components/About";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
+import ProjectsPage from "./pages/ProjectsPage";
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    // Notify Lenis smooth scroller to also jump to top
+    window.dispatchEvent(new Event("scrollToTop"));
+  }, [pathname]);
+
+  return null;
+}
 
 export default function App() {
   const [activeProjectId, setActiveProjectId] = useState(null);
@@ -40,6 +54,7 @@ export default function App() {
 
   return (
     <>
+      <ScrollToTop />
       <LoadingScreen />
       <CustomCursor />
       <Navbar
@@ -47,16 +62,29 @@ export default function App() {
         toggleTheme={() => setIsDarkMode(!isDarkMode)}
       />
 
-      <main>
-        <Hero />
-        {/* <ClientLogos /> */}
-        <Projects onOpenCaseStudy={(id) => setActiveProjectId(id)} />
-        <Skills />
-        <Experience />
-        <Education />
-        <About />
-        <Contact />
-      </main>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <main>
+              <Hero />
+              {/* <ClientLogos /> */}
+              <Projects onOpenCaseStudy={(id) => setActiveProjectId(id)} />
+              <Skills />
+              <Experience />
+              <Education />
+              <About />
+              <Contact />
+            </main>
+          }
+        />
+        <Route
+          path="/projects"
+          element={
+            <ProjectsPage onOpenCaseStudy={(id) => setActiveProjectId(id)} />
+          }
+        />
+      </Routes>
 
       <Footer />
 

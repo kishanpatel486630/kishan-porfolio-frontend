@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link, useLocation } from "react-router-dom";
 import { HiMenuAlt3, HiX, HiSun, HiMoon } from "react-icons/hi";
 import { navLinks, personalInfo } from "../data/portfolio";
 import Button from "./ui/Button";
@@ -7,6 +8,8 @@ import Button from "./ui/Button";
 export default function Navbar({ isDarkMode, toggleTheme }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const location = useLocation();
+  const isHomePage = location.pathname === "/";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
@@ -32,7 +35,7 @@ export default function Navbar({ isDarkMode, toggleTheme }) {
       >
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
           {/* Logo */}
-          <a href="#hero" className="flex items-center gap-2 group">
+          <Link to="/" className="flex items-center gap-2 group">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gradient-start to-gradient-end flex items-center justify-center font-bold text-lg transition-transform duration-300 group-hover:scale-110">
               K
             </div>
@@ -40,14 +43,14 @@ export default function Navbar({ isDarkMode, toggleTheme }) {
               {personalInfo.name.split(" ")[0]}
               <span className="gradient-text">.</span>
             </span>
-          </a>
+          </Link>
 
           {/* Desktop Links */}
           <div className="hidden md:flex items-center gap-1">
             {navLinks.map((link) => (
               <a
                 key={link.href}
-                href={link.href}
+                href={isHomePage ? link.href : `/${link.href}`}
                 className="px-4 py-2 text-sm text-text-secondary font-medium rounded-lg
                   transition-all duration-300 hover:text-text-primary hover:bg-black/5 dark:hover:bg-white/5"
               >
@@ -71,7 +74,7 @@ export default function Navbar({ isDarkMode, toggleTheme }) {
             </button>
 
             <Button
-              href="#contact"
+              href={isHomePage ? "#contact" : "/#contact"}
               variant="primary"
               className="hidden md:inline-flex !px-5 !py-2.5 text-sm"
             >
@@ -101,7 +104,7 @@ export default function Navbar({ isDarkMode, toggleTheme }) {
             {navLinks.map((link, i) => (
               <motion.a
                 key={link.href}
-                href={link.href}
+                href={isHomePage ? link.href : `/${link.href}`}
                 className="text-2xl font-semibold text-text-primary hover:text-gradient-end transition-colors"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -112,7 +115,7 @@ export default function Navbar({ isDarkMode, toggleTheme }) {
               </motion.a>
             ))}
             <Button
-              href="#contact"
+              href={isHomePage ? "#contact" : "/#contact"}
               variant="primary"
               className="mt-4"
               onClick={() => setMobileOpen(false)}
