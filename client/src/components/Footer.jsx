@@ -9,7 +9,7 @@ export default function Footer() {
     { icon: SiBehance, href: personalInfo.social.behance, label: "Behance" },
     { icon: FiLinkedin, href: personalInfo.social.linkedin, label: "LinkedIn" },
     { icon: FiGithub, href: personalInfo.social.github, label: "GitHub" },
-    { icon: FiTwitter, href: personalInfo.social.twitter, label: "Twitter" },
+    // { icon: FiTwitter, href: personalInfo.social.twitter, label: "Twitter" },
   ];
 
   return (
@@ -28,12 +28,12 @@ export default function Footer() {
           </div>
 
           {/* Nav links */}
-          <div className="flex items-center justify-center gap-6 flex-wrap">
+          <div className="flex items-center justify-center gap-4 md:gap-6">
             {navLinks.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
-                className="text-sm text-text-muted hover:text-text-primary transition-colors duration-300"
+                className="text-sm text-text-muted hover:text-text-primary transition-colors duration-300 whitespace-nowrap"
               >
                 {link.label}
               </a>
