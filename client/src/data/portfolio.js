@@ -18,7 +18,7 @@ export const personalInfo = {
     twitter: "https://twitter.com/kishanparvadiya",
   },
   resumeUrl:
-    "https://drive.google.com/file/d/1tZMTIx7ZT7KQOxP3Rg32gUt4YvHQAgFN/view",
+    "https://drive.google.com/file/d/1o6AZr9irkFMHJ-xepU5FIXD385b22t2w/view?usp=sharing",
 };
 
 export const navLinks = [
