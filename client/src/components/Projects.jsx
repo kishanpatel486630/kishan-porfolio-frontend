@@ -96,7 +96,7 @@ export default function Projects({ onOpenCaseStudy }) {
                               e.stopPropagation();
                               changeImage(project.id, images.length, -1);
                             }}
-                            className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full glass flex items-center justify-center text-white/90 hover:text-white"
+                            className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full glass flex items-center justify-center text-text-primary/90 hover:text-text-primary"
                             aria-label="Previous image"
                           >
                             <HiChevronLeft size={18} />
@@ -107,7 +107,7 @@ export default function Projects({ onOpenCaseStudy }) {
                               e.stopPropagation();
                               changeImage(project.id, images.length, 1);
                             }}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full glass flex items-center justify-center text-white/90 hover:text-white"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full glass flex items-center justify-center text-text-primary/90 hover:text-text-primary"
                             aria-label="Next image"
                           >
                             <HiChevronRight size={18} />
@@ -118,7 +118,7 @@ export default function Projects({ onOpenCaseStudy }) {
                       {/* Case Study indicator */}
                       {project.hasCaseStudy && (
                         <motion.div
-                          className="absolute top-4 left-4 px-3 py-1 rounded-full bg-gradient-to-r from-gradient-start to-gradient-end text-xs font-semibold"
+                          className="absolute top-4 left-4 px-3 py-1 rounded-full bg-gradient-to-r from-gradient-start to-gradient-end text-white text-xs font-semibold"
                           animate={
                             hoveredId === project.id
                               ? { scale: [1, 1.05, 1] }

@@ -120,7 +120,7 @@ export default function Hero() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-11 h-11 rounded-xl glass flex items-center justify-center
-                  text-text-secondary hover:text-white hover:border-border-hover
+                  text-text-secondary hover:text-text-primary hover:border-border-hover
                   transition-all duration-300 hover:scale-110 hover:shadow-[0_0_20px_rgba(37,99,235,0.2)]"
                 aria-label={label}
               >

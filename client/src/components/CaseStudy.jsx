@@ -78,7 +78,7 @@ export default function CaseStudy({ activeProjectId, onClose }) {
                 <div className="sticky top-0 z-10 flex items-center justify-between p-6 glass-strong">
                   <button
                     onClick={onClose}
-                    className="flex items-center gap-2 text-text-secondary hover:text-white transition-colors"
+                    className="flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors"
                   >
                     <HiArrowLeft size={18} />
                     <span className="text-sm font-medium">
@@ -87,7 +87,7 @@ export default function CaseStudy({ activeProjectId, onClose }) {
                   </button>
                   <button
                     onClick={onClose}
-                    className="w-10 h-10 rounded-xl glass flex items-center justify-center text-text-secondary hover:text-white transition-colors"
+                    className="w-10 h-10 rounded-xl glass flex items-center justify-center text-text-secondary hover:text-text-primary transition-colors"
                     aria-label="Close"
                   >
                     <HiX size={18} />
@@ -125,7 +125,7 @@ export default function CaseStudy({ activeProjectId, onClose }) {
                           <button
                             type="button"
                             onClick={() => changeImage(-1)}
-                            className="absolute left-5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full glass flex items-center justify-center text-white/90 hover:text-white"
+                            className="absolute left-5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full glass flex items-center justify-center text-text-primary/90 hover:text-text-primary"
                             aria-label="Previous image"
                           >
                             <HiChevronLeft size={20} />
@@ -133,7 +133,7 @@ export default function CaseStudy({ activeProjectId, onClose }) {
                           <button
                             type="button"
                             onClick={() => changeImage(1)}
-                            className="absolute right-5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full glass flex items-center justify-center text-white/90 hover:text-white"
+                            className="absolute right-5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full glass flex items-center justify-center text-text-primary/90 hover:text-text-primary"
                             aria-label="Next image"
                           >
                             <HiChevronRight size={20} />
@@ -167,7 +167,7 @@ export default function CaseStudy({ activeProjectId, onClose }) {
                         <p className="text-xs text-text-muted uppercase tracking-wider mb-1">
                           {item.label}
                         </p>
-                        <p className="text-sm font-medium text-white">
+                        <p className="text-sm font-medium text-text-primary">
                           {item.value}
                         </p>
                       </div>

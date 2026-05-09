@@ -72,7 +72,7 @@ export default function About() {
                 ].map((fact) => (
                   <div key={fact.label} className="p-3 rounded-xl bg-white/[0.02] border border-border">
                     <p className="text-xs text-text-muted uppercase tracking-wider mb-1">{fact.label}</p>
-                    <p className="text-sm font-medium text-white truncate">{fact.value}</p>
+                    <p className="text-sm font-medium text-text-primary truncate">{fact.value}</p>
                   </div>
                 ))}
               </div>

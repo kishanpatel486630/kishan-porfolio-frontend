@@ -1,20 +1,63 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
 @import "tailwindcss";
 
+/* ── Theme Variables ── */
+:root {
+  --theme-bg-primary: #f8fafc;
+  --theme-bg-card: #ffffff;
+  --theme-border: #e2e8f0;
+  --theme-border-hover: #94a3b8;
+  --theme-gradient-start: #4b4efc;
+  --theme-gradient-end: #3b82f6;
+  --theme-accent-glow: #6366f1;
+  --theme-text-primary: #0f172a;
+  --theme-text-secondary: #475569;
+  --theme-text-muted: #94a3b8;
+  --theme-success: #10b981;
+  --theme-error: #ef4444;
+
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-strong-bg: rgba(255, 255, 255, 0.95);
+  --glass-shadow: rgba(0, 0, 0, 0.05);
+  --glass-inner: rgba(0, 0, 0, 0.02);
+  --glass-strong-inner: rgba(0, 0, 0, 0.05);
+}
+
+.dark {
+  --theme-bg-primary: #05060a;
+  --theme-bg-card: #0a0d17;
+  --theme-border: #1e233d;
+  --theme-border-hover: #3e4b94;
+  --theme-gradient-start: #4b4efc;
+  --theme-gradient-end: #3b82f6;
+  --theme-accent-glow: #6366f1;
+  --theme-text-primary: #f8fafc;
+  --theme-text-secondary: #94a3b8;
+  --theme-text-muted: #475569;
+  --theme-success: #10b981;
+  --theme-error: #ef4444;
+
+  --glass-bg: rgba(13, 16, 28, 0.6);
+  --glass-strong-bg: rgba(13, 16, 28, 0.9);
+  --glass-shadow: rgba(0, 0, 0, 0.4);
+  --glass-inner: rgba(160, 175, 255, 0.08);
+  --glass-strong-inner: rgba(160, 175, 255, 0.1);
+}
+
 /* ── Design System Tokens ── */
 @theme {
-  --color-bg-primary: #05060a;
-  --color-bg-card: #0a0d17;
-  --color-border: #1e233d;
-  --color-border-hover: #3e4b94;
-  --color-gradient-start: #4b4efc;
-  --color-gradient-end: #3b82f6;
-  --color-accent-glow: #6366f1;
-  --color-text-primary: #f8fafc;
-  --color-text-secondary: #94a3b8;
-  --color-text-muted: #475569;
-  --color-success: #10b981;
-  --color-error: #ef4444;
+  --color-bg-primary: var(--theme-bg-primary);
+  --color-bg-card: var(--theme-bg-card);
+  --color-border: var(--theme-border);
+  --color-border-hover: var(--theme-border-hover);
+  --color-gradient-start: var(--theme-gradient-start);
+  --color-gradient-end: var(--theme-gradient-end);
+  --color-accent-glow: var(--theme-accent-glow);
+  --color-text-primary: var(--theme-text-primary);
+  --color-text-secondary: var(--theme-text-secondary);
+  --color-text-muted: var(--theme-text-muted);
+  --color-success: var(--theme-success);
+  --color-error: var(--theme-error);
 
   --font-family-sans: "Inter", system-ui, -apple-system, sans-serif;
 
@@ -104,6 +147,9 @@ body {
   color: var(--color-text-primary);
   overflow-x: hidden;
   line-height: 1.6;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 /* ── Custom Scrollbar ── */
@@ -140,23 +186,23 @@ body {
 
 /* ── Glassmorphism Utility ── */
 .glass {
-  background: rgba(13, 16, 28, 0.6);
+  background: var(--glass-bg);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border: 1px solid var(--color-border);
   box-shadow:
-    inset 0 1px 1px 0 rgba(160, 175, 255, 0.08),
-    0 8px 32px 0 rgba(0, 0, 0, 0.4);
+    inset 0 1px 1px 0 var(--glass-inner),
+    0 8px 32px 0 var(--glass-shadow);
 }
 
 .glass-strong {
-  background: rgba(13, 16, 28, 0.9);
+  background: var(--glass-strong-bg);
   backdrop-filter: blur(32px);
   -webkit-backdrop-filter: blur(32px);
   border: 1px solid var(--color-border);
   box-shadow:
-    inset 0 1px 1px 0 rgba(160, 175, 255, 0.1),
-    0 8px 32px 0 rgba(0, 0, 0, 0.5);
+    inset 0 1px 1px 0 var(--glass-strong-inner),
+    0 8px 32px 0 var(--glass-shadow);
 }
 
 /* ── Gradient Text ── */

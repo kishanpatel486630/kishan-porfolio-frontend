@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 
 const variants = {
   primary: `relative inline-flex items-center justify-center gap-2 px-6 py-3 
@@ -16,10 +16,17 @@ const variants = {
   ghost: `relative inline-flex items-center justify-center gap-2 px-5 py-2.5 
           bg-transparent text-text-secondary font-medium rounded-lg 
           transition-all duration-300 
-          hover:text-white hover:bg-white/[0.05]`,
+          hover:text-text-primary hover:bg-black/5 dark:hover:bg-white/5`,
 };
 
-export default function Button({ children, variant = 'primary', className = '', href, onClick, ...props }) {
+export default function Button({
+  children,
+  variant = "primary",
+  className = "",
+  href,
+  onClick,
+  ...props
+}) {
   const classes = `${variants[variant]} ${className}`;
 
   if (href) {

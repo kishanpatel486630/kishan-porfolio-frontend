@@ -25,7 +25,7 @@ export default function ClientLogos() {
               key={`${logo.name}-${i}`}
               className="flex-shrink-0 mx-10 md:mx-14 flex items-center justify-center"
             >
-              <span className="text-xl md:text-2xl font-bold text-white/20 hover:text-white/40 transition-colors duration-500 whitespace-nowrap tracking-wide">
+              <span className="text-xl md:text-2xl font-bold text-text-primary/20 hover:text-text-primary/40 transition-colors duration-500 whitespace-nowrap tracking-wide">
                 {logo.text}
               </span>
             </div>

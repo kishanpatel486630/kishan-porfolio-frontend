@@ -33,7 +33,7 @@ export default function Footer() {
               <a
                 key={link.href}
                 href={link.href}
-                className="text-sm text-text-muted hover:text-white transition-colors duration-300"
+                className="text-sm text-text-muted hover:text-text-primary transition-colors duration-300"
               >
                 {link.label}
               </a>
@@ -49,7 +49,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-9 h-9 rounded-lg flex items-center justify-center text-text-muted
-                  hover:text-white hover:bg-white/[0.05] transition-all duration-300"
+                  hover:text-text-primary hover:bg-white/[0.05] transition-all duration-300"
                 aria-label={label}
               >
                 <Icon size={16} />

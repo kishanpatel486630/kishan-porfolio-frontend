@@ -86,7 +86,7 @@ export default function Contact() {
   };
 
   const inputClasses = `w-full px-5 py-4 rounded-xl bg-white/[0.03] border border-border
-    text-white placeholder:text-text-muted text-sm
+    text-text-primary placeholder:text-text-muted text-sm
     focus:outline-none focus:border-gradient-start focus:shadow-[0_0_20px_rgba(37,99,235,0.1)]
     transition-all duration-300`;
 
@@ -164,12 +164,12 @@ export default function Contact() {
                       {href ? (
                         <a
                           href={href}
-                          className="text-sm font-medium text-white hover:text-gradient-end transition-colors"
+                          className="text-sm font-medium text-text-primary hover:text-gradient-end transition-colors"
                         >
                           {value}
                         </a>
                       ) : (
-                        <p className="text-sm font-medium text-white">
+                        <p className="text-sm font-medium text-text-primary">
                           {value}
                         </p>
                       )}

@@ -26,7 +26,7 @@ export default function LoadingScreen() {
               transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             >
               <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-gradient-start to-gradient-end flex items-center justify-center">
-                <span className="text-3xl font-bold text-white">K</span>
+                <span className="text-3xl font-bold text-text-primary">K</span>
               </div>
               {/* Orbiting ring */}
               <motion.div
@@ -48,7 +48,7 @@ export default function LoadingScreen() {
 
             {/* Text */}
             <motion.p
-              className="text-white/60 text-sm font-medium tracking-widest uppercase"
+              className="text-text-primary/60 text-sm font-medium tracking-widest uppercase"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5 }}

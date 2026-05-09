@@ -1,29 +1,31 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { HiMenuAlt3, HiX } from 'react-icons/hi';
-import { navLinks, personalInfo } from '../data/portfolio';
-import Button from './ui/Button';
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { HiMenuAlt3, HiX, HiSun, HiMoon } from "react-icons/hi";
+import { navLinks, personalInfo } from "../data/portfolio";
+import Button from "./ui/Button";
 
-export default function Navbar() {
+export default function Navbar({ isDarkMode, toggleTheme }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = mobileOpen ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [mobileOpen]);
 
   return (
     <>
       <motion.nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500
-          ${scrolled ? 'glass-strong py-3 shadow-lg shadow-black/20' : 'py-5 bg-transparent'}`}
+          ${scrolled ? "glass-strong py-3 shadow-lg shadow-black/20" : "py-5 bg-transparent"}`}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
@@ -35,7 +37,7 @@ export default function Navbar() {
               K
             </div>
             <span className="font-bold text-lg hidden sm:block">
-              {personalInfo.name.split(' ')[0]}
+              {personalInfo.name.split(" ")[0]}
               <span className="gradient-text">.</span>
             </span>
           </a>
@@ -47,7 +49,7 @@ export default function Navbar() {
                 key={link.href}
                 href={link.href}
                 className="px-4 py-2 text-sm text-text-secondary font-medium rounded-lg
-                  transition-all duration-300 hover:text-white hover:bg-white/[0.05]"
+                  transition-all duration-300 hover:text-text-primary hover:bg-black/5 dark:hover:bg-white/5"
               >
                 {link.label}
               </a>
@@ -56,11 +58,27 @@ export default function Navbar() {
 
           {/* CTA + Mobile Toggle */}
           <div className="flex items-center gap-3">
-            <Button href="#contact" variant="primary" className="hidden md:inline-flex !px-5 !py-2.5 text-sm">
+            <button
+              onClick={toggleTheme}
+              className="w-10 h-10 flex items-center justify-center rounded-lg text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+              aria-label="Toggle Theme"
+            >
+              {isDarkMode ? (
+                <HiSun size={22} className="text-yellow-400" />
+              ) : (
+                <HiMoon size={22} className="text-slate-700" />
+              )}
+            </button>
+
+            <Button
+              href="#contact"
+              variant="primary"
+              className="hidden md:inline-flex !px-5 !py-2.5 text-sm"
+            >
               Let's Talk
             </Button>
             <button
-              className="md:hidden w-10 h-10 flex items-center justify-center rounded-lg text-white hover:bg-white/[0.05] transition-colors"
+              className="md:hidden w-10 h-10 flex items-center justify-center rounded-lg text-text-primary hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
               onClick={() => setMobileOpen(!mobileOpen)}
               aria-label="Toggle menu"
             >
@@ -84,7 +102,7 @@ export default function Navbar() {
               <motion.a
                 key={link.href}
                 href={link.href}
-                className="text-2xl font-semibold text-white hover:text-gradient-end transition-colors"
+                className="text-2xl font-semibold text-text-primary hover:text-gradient-end transition-colors"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.08 }}
@@ -93,7 +111,12 @@ export default function Navbar() {
                 {link.label}
               </motion.a>
             ))}
-            <Button href="#contact" variant="primary" className="mt-4" onClick={() => setMobileOpen(false)}>
+            <Button
+              href="#contact"
+              variant="primary"
+              className="mt-4"
+              onClick={() => setMobileOpen(false)}
+            >
               Let's Talk
             </Button>
           </motion.div>
