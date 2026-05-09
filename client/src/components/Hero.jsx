@@ -154,9 +154,9 @@ export default function Hero() {
         animate={{ y: [0, 10, 0] }}
         transition={{ duration: 2, repeat: Infinity }}
       >
-        <div className="w-6 h-10 rounded-full border-2 border-white/20 flex justify-center pt-2">
+        <div className="w-6 h-10 rounded-full border-2 border-text-primary/20 flex justify-center pt-2">
           <motion.div
-            className="w-1.5 h-1.5 rounded-full bg-gradient-end"
+            className="w-1.5 h-1.5 rounded-full bg-gradient-to-b from-gradient-start to-gradient-end"
             animate={{ y: [0, 12, 0], opacity: [1, 0.3, 1] }}
             transition={{ duration: 2, repeat: Infinity }}
           />
