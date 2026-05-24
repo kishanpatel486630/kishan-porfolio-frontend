@@ -314,6 +314,10 @@ VITE_WEB3FORMS_ACCESS_KEY=your-access-key-here
 - ✅ Keep your Access Key private
 - ✅ The key is safe to use in frontend (Web3Forms provides security)
 
+#### Live Deployment on Vercel
+
+For the production site, add `VITE_WEB3FORMS_ACCESS_KEY` in your Vercel project settings under Environment Variables, then redeploy. A local `.env` file is not read by the live deployment.
+
 ### Optional: Environment Variables
 
 ```env

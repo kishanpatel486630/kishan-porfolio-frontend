@@ -9,6 +9,7 @@ import GlowOrb from "./ui/GlowOrb";
 import FadeInOnScroll from "./motion/FadeInOnScroll";
 
 const WEB3FORMS_ACCESS_KEY = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
+const IS_PRODUCTION = import.meta.env.PROD;
 
 export default function Contact({
   title = "Get in Touch",
@@ -36,7 +37,9 @@ export default function Contact({
       if (!WEB3FORMS_ACCESS_KEY) {
         setStatus("error");
         setStatusMessage(
-          "Web3Forms key is missing. Add VITE_WEB3FORMS_ACCESS_KEY in client/.env.",
+          IS_PRODUCTION
+            ? "Contact form is not configured in this deployment. Set VITE_WEB3FORMS_ACCESS_KEY in your hosting environment and redeploy."
+            : "Web3Forms key is missing. Add VITE_WEB3FORMS_ACCESS_KEY in client/.env.",
         );
         setTimeout(() => setStatus("idle"), 4000);
         return;
