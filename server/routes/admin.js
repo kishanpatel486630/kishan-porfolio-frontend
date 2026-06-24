@@ -86,8 +86,8 @@ router.post("/admin/login", async (req, res) => {
   const { username, password } = req.body;
   const { ip, userAgent } = getClientMeta(req);
 
-  const envUsername = process.env.ADMIN_USERNAME || "kishan";
-  const envPassword = process.env.ADMIN_PASSWORD || "kishan123";
+  const envUsername = process.env.ADMIN_USERNAME || "k-admin";
+  const envPassword = process.env.ADMIN_PASSWORD || "Kishan-admin@2004";
 
   if (username === envUsername && password === envPassword) {
     // Generate secure session token
