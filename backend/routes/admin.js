@@ -188,26 +188,81 @@ router.post("/admin/upload", requireAuth, async (req, res) => {
   }
 });
 
-// 8. GET /api/admin/gallery - Get all files in the uploads folder
+// Helper to format file size in human-readable bytes
+function formatBytes(bytes) {
+  if (bytes === 0) return "0 Bytes";
+  const k = 1024;
+  const sizes = ["Bytes", "KB", "MB", "GB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+}
+
+// 8. GET /api/admin/gallery - Get all files in the uploads folder and client images folder
 router.get("/admin/gallery", requireAuth, async (req, res) => {
   try {
     const serverUploadsDir = path.join(__dirname, "../uploads");
+    const clientImagesDir = path.join(__dirname, "../../client/public/images");
     
-    // Ensure directory exists
+    // Ensure uploads directory exists
     await fs.mkdir(serverUploadsDir, { recursive: true }).catch(() => {});
-    
-    const files = await fs.readdir(serverUploadsDir);
-    
-    // Filter to return only images (or common assets) and map to URL paths
-    const photos = files
-      .filter((file) => /\.(jpg|jpeg|png|gif|webp|svg|ico)$/i.test(file))
-      .map((file) => `/uploads/${file}`);
-      
-    // Sort by timestamp (newest first)
+
+    const photos = [];
+
+    // 1. Read from backend uploads directory
+    try {
+      const uploadFiles = await fs.readdir(serverUploadsDir);
+      for (const file of uploadFiles) {
+        if (/\.(jpg|jpeg|png|gif|webp|svg|ico)$/i.test(file)) {
+          const filePath = path.join(serverUploadsDir, file);
+          const stats = await fs.stat(filePath).catch(() => null);
+          const bytes = stats ? stats.size : 0;
+          photos.push({
+            name: file,
+            path: `/uploads/${file}`,
+            size: formatBytes(bytes),
+            bytes,
+            type: "uploaded"
+          });
+        }
+      }
+    } catch (err) {
+      console.warn("⚠️ Failed to read backend uploads directory:", err.message);
+    }
+
+    // 2. Read from client public images directory
+    try {
+      if (await fs.access(clientImagesDir).then(() => true).catch(() => false)) {
+        const staticFiles = await fs.readdir(clientImagesDir);
+        for (const file of staticFiles) {
+          if (/\.(jpg|jpeg|png|gif|webp|svg|ico)$/i.test(file)) {
+            const filePath = path.join(clientImagesDir, file);
+            const stats = await fs.stat(filePath).catch(() => null);
+            const bytes = stats ? stats.size : 0;
+            photos.push({
+              name: file,
+              path: `/images/${file}`,
+              size: formatBytes(bytes),
+              bytes,
+              type: "static"
+            });
+          }
+        }
+      }
+    } catch (err) {
+      console.warn("⚠️ Failed to read client public images directory:", err.message);
+    }
+
+    // Sort: uploaded files first (sorted by timestamp), then static files (sorted alphabetically)
     photos.sort((a, b) => {
-      const timeA = parseFloat(a.split("/").pop().split("_")[0]) || 0;
-      const timeB = parseFloat(b.split("/").pop().split("_")[0]) || 0;
-      return timeB - timeA;
+      if (a.type !== b.type) {
+        return a.type === "uploaded" ? -1 : 1;
+      }
+      if (a.type === "uploaded") {
+        const timeA = parseFloat(a.name.split("_")[0]) || 0;
+        const timeB = parseFloat(b.name.split("_")[0]) || 0;
+        return timeB - timeA;
+      }
+      return a.name.localeCompare(b.name);
     });
 
     res.json({ success: true, photos });
@@ -217,36 +272,46 @@ router.get("/admin/gallery", requireAuth, async (req, res) => {
   }
 });
 
-// 9. DELETE /api/admin/gallery/:filename - Delete file from uploads folders
+// 9. DELETE /api/admin/gallery/:filename - Delete file from uploads folder or client images folder
 router.delete("/api/admin/gallery/:filename", requireAuth, async (req, res) => {
   try {
     const { filename } = req.params;
+    const { type } = req.query;
     if (!filename) {
       return res.status(400).json({ success: false, error: "Filename is required" });
     }
 
     // Security check to avoid path traversal
     const safeFilename = path.basename(filename);
-
-    const serverFilePath = path.join(__dirname, "../uploads", safeFilename);
-    const clientFilePath = path.join(__dirname, "../../client/public/uploads", safeFilename);
-
     let deletedAtLeastOne = false;
 
-    // Delete from server directory
-    try {
-      await fs.unlink(serverFilePath);
-      deletedAtLeastOne = true;
-    } catch (err) {
-      if (err.code !== "ENOENT") throw err;
-    }
+    if (type === "static") {
+      const clientFilePath = path.join(__dirname, "../../client/public/images", safeFilename);
+      try {
+        await fs.unlink(clientFilePath);
+        deletedAtLeastOne = true;
+      } catch (err) {
+        if (err.code !== "ENOENT") throw err;
+      }
+    } else {
+      const serverFilePath = path.join(__dirname, "../uploads", safeFilename);
+      const clientFilePath = path.join(__dirname, "../../client/public/uploads", safeFilename);
 
-    // Delete from client directory
-    try {
-      await fs.unlink(clientFilePath);
-      deletedAtLeastOne = true;
-    } catch (err) {
-      if (err.code !== "ENOENT") throw err;
+      // Delete from server directory
+      try {
+        await fs.unlink(serverFilePath);
+        deletedAtLeastOne = true;
+      } catch (err) {
+        if (err.code !== "ENOENT") throw err;
+      }
+
+      // Delete from client directory
+      try {
+        await fs.unlink(clientFilePath);
+        deletedAtLeastOne = true;
+      } catch (err) {
+        if (err.code !== "ENOENT") throw err;
+      }
     }
 
     if (deletedAtLeastOne) {

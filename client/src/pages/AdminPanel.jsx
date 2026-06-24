@@ -2002,20 +2002,27 @@ export default function AdminPanel() {
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                   {galleryPhotos.map((photo, idx) => {
-                    const filename = photo.split("/").pop();
+                    const filename = photo.name || (typeof photo === "string" ? photo.split("/").pop() : "");
+                    const pathUrl = photo.path || (typeof photo === "string" ? photo : "");
+                    const isLargeFile = photo.bytes > 500 * 1024 || (photo.size && (photo.size.includes("MB") || photo.size.includes("GB")));
                     return (
                       <div key={idx} className="glass rounded-2xl border border-border overflow-hidden flex flex-col group relative">
                         {/* Image Preview Box */}
                         <div className="aspect-[4/3] w-full bg-bg-primary overflow-hidden relative border-b border-border flex items-center justify-center">
-                          <img src={photo} alt={filename} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+                          <img src={pathUrl} alt={filename} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
                           
                           {/* Quick Delete Overlay Button */}
                           <button
                             onClick={async () => {
-                              if (!window.confirm("Are you sure you want to permanently delete this photo? Any project referencing this path will fail to load it.")) return;
+                              const isStatic = photo.type === "static" || (typeof photo === "string" && !photo.startsWith("/uploads/"));
+                              const confirmMsg = isStatic
+                                ? "WARNING: This is a static system photo inside client/public/images/. Deleting it might break default rendering on your live site. Are you sure you want to permanently delete it?"
+                                : "Are you sure you want to permanently delete this photo? Any project referencing this path will fail to load it.";
+                              if (!window.confirm(confirmMsg)) return;
                               try {
                                 const token = localStorage.getItem("adminToken");
-                                const res = await fetch(`${apiBaseUrl}/api/admin/gallery/${filename}`, {
+                                const fileType = photo.type || (typeof photo === "string" && photo.startsWith("/uploads/") ? "uploaded" : "static");
+                                const res = await fetch(`${apiBaseUrl}/api/admin/gallery/${filename}?type=${fileType}`, {
                                   method: "DELETE",
                                   headers: { Authorization: `Bearer ${token}` }
                                 });
@@ -2036,17 +2043,45 @@ export default function AdminPanel() {
                         
                         {/* Asset Info */}
                         <div className="p-4 flex-1 flex flex-col justify-between gap-3">
-                          <div className="space-y-1">
-                            <span className="text-[10px] text-text-muted uppercase tracking-wider font-bold">Web Relative Path</span>
-                            <div className="font-mono text-xs select-all bg-bg-primary border border-border px-2 py-1.5 rounded-lg break-all text-text-secondary">
-                              {photo}
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between gap-2 flex-wrap">
+                              {/* Type Badge */}
+                              {(() => {
+                                const isUploaded = photo.type === "uploaded" || (typeof photo === "string" && photo.startsWith("/uploads/"));
+                                return (
+                                  <span className={`text-[10px] px-2 py-0.5 rounded-md font-bold uppercase tracking-wider border ${
+                                    isUploaded 
+                                      ? "text-emerald-400 bg-emerald-500/10 border-emerald-500/20"
+                                      : "text-blue-400 bg-blue-500/10 border-blue-500/20"
+                                  }`}>
+                                    {isUploaded ? "Uploaded" : "Static Asset"}
+                                  </span>
+                                );
+                              })()}
+                              
+                              {/* Size Badge */}
+                              <span className={`text-[10px] px-2 py-0.5 rounded-md font-bold border flex items-center gap-1 ${
+                                isLargeFile 
+                                  ? "text-amber-400 bg-amber-500/10 border-amber-500/20 animate-pulse" 
+                                  : "text-text-muted bg-bg-primary border-border"
+                              }`} title={isLargeFile ? "Consider compressing this image to optimize load speed!" : "Good file size!"}>
+                                {photo.size || "N/A"}
+                                {isLargeFile && "⚠️"}
+                              </span>
+                            </div>
+                            
+                            <div className="space-y-1">
+                              <span className="text-[10px] text-text-muted uppercase tracking-wider font-bold">Web Relative Path</span>
+                              <div className="font-mono text-xs select-all bg-bg-primary border border-border px-2 py-1.5 rounded-lg break-all text-text-secondary">
+                                {pathUrl}
+                              </div>
                             </div>
                           </div>
                           
                           <button
                             type="button"
                             onClick={() => {
-                              navigator.clipboard.writeText(photo);
+                              navigator.clipboard.writeText(pathUrl);
                               showToast("Path copied to clipboard!");
                             }}
                             className="w-full py-2 bg-bg-primary border border-border hover:bg-bg-card rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer text-text-secondary"

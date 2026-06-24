@@ -6,3 +6,5 @@ client/node_modules/
 backend/.env
 client/.env
 client/.env.local
+backend/uploads/
+client/public/uploads/
