@@ -1,6 +1,6 @@
 # 🚀 Render Deployment Guide for Express Backend
 
-Your backend server is completely self-contained in the `/server` directory of your project. You can deploy it to **Render** using their free Web Service tier.
+Your backend server is completely self-contained in the `/backend` directory of your project. You can deploy it to **Render** using their free Web Service tier.
 
 Below is the step-by-step guide to get it up and running.
 
@@ -13,7 +13,7 @@ Below is the step-by-step guide to get it up and running.
    * **Name**: `kishan-portfolio-backend` (or any name you like)
    * **Region**: Choose the closest region to you (e.g., `Singapore` or `Oregon`)
    * **Branch**: `main`
-   * **Root Directory**: `server` 👈 *(This is critical! It tells Render to deploy only the backend folder)*
+   * **Root Directory**: `backend` 👈 *(This is critical! It tells Render to deploy only the backend folder)*
    * **Runtime**: `Node`
    * **Build Command**: `npm install`
    * **Start Command**: `npm start`
@@ -55,5 +55,5 @@ Once your Render web service finishes deploying, Render will give you a public U
 
 ## ⚠️ Important Note About Server Load / File Persistence
 Render's **Free Web Service Tier** does not have persistent storage. This means:
-* Whenever the free tier server goes to sleep (after 15 minutes of inactivity) or restarts, any images you uploaded to `server/uploads/` will be reset, and changes saved in `portfolio.json` will reset back to the database state last pushed to your GitHub repository.
+* Whenever the free tier server goes to sleep (after 15 minutes of inactivity) or restarts, any images you uploaded to `backend/uploads/` will be reset, and changes saved in `portfolio.json` will reset back to the database state last pushed to your GitHub repository.
 * **Best Practice**: If you are using the Free tier, use the **local admin panel workflow** (`http://localhost:5173/kishan-admin`) to modify text and upload pictures. This saves the updates directly to your local file structure. Once you are done customizing, push your changes to GitHub to keep Vercel and Render synchronized.
