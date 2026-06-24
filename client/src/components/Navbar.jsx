@@ -2,13 +2,17 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
 import { HiMenuAlt3, HiX, HiSun, HiMoon } from "react-icons/hi";
-import { navLinks, personalInfo } from "../data/portfolio";
+import { usePortfolio } from "../context/PortfolioContext";
 import Button from "./ui/Button";
 
 export default function Navbar({ isDarkMode, toggleTheme }) {
+  const { navLinks, personalInfo } = usePortfolio();
+  const location = useLocation();
+  const isAdminPage = location.pathname.startsWith("/kishan-admin");
+
+  if (isAdminPage) return null;
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const location = useLocation();
   const isHomePage = location.pathname === "/";
 
   useEffect(() => {

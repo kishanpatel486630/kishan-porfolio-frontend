@@ -2,11 +2,12 @@ import { motion } from "framer-motion";
 import { HiArrowDown } from "react-icons/hi";
 import { FiLinkedin, FiGithub } from "react-icons/fi";
 import { SiBehance } from "react-icons/si";
-import { personalInfo, stats } from "../data/portfolio";
+import { usePortfolio } from "../context/PortfolioContext";
 import Button from "./ui/Button";
 import GlowOrb from "./ui/GlowOrb";
 
 export default function Hero() {
+  const { personalInfo, stats } = usePortfolio();
   return (
     <section
       id="hero"

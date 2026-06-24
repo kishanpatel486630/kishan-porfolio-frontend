@@ -1,8 +1,9 @@
-import { clientLogos } from '../data/portfolio';
+import { usePortfolio } from '../context/PortfolioContext';
 
 export default function ClientLogos() {
+  const { clientLogos } = usePortfolio();
   // Double the logos for seamless infinite scroll
-  const doubled = [...clientLogos, ...clientLogos];
+  const doubled = [...(clientLogos || []), ...(clientLogos || [])];
 
   return (
     <section className="py-16 border-y border-border overflow-hidden">

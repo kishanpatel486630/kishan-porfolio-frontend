@@ -1,10 +1,11 @@
 import { motion } from 'framer-motion';
-import { skills } from '../data/portfolio';
+import { usePortfolio } from '../context/PortfolioContext';
 import SectionHeading from './ui/SectionHeading';
 import Card from './ui/Card';
 import { StaggerContainer, StaggerItem } from './motion/StaggerContainer';
 
 export default function Skills() {
+  const { skills } = usePortfolio();
   return (
     <section id="skills" className="relative py-24 md:py-32">
       <div className="max-w-7xl mx-auto px-6">

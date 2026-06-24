@@ -1,12 +1,15 @@
 import { motion } from 'framer-motion';
 import { HiDownload } from 'react-icons/hi';
-import { personalInfo, dynamicExperienceValue } from '../data/portfolio';
+import { usePortfolio } from '../context/PortfolioContext';
 import SectionHeading from './ui/SectionHeading';
 import Button from './ui/Button';
 import GlowOrb from './ui/GlowOrb';
 import FadeInOnScroll from './motion/FadeInOnScroll';
 
 export default function About() {
+  const { personalInfo, stats } = usePortfolio();
+  const experienceStat = stats?.find(s => s.label.includes("Experience")) || { value: "1.5" };
+  const dynamicExperienceValue = experienceStat.value;
   return (
     <section id="about" className="relative py-24 md:py-32 overflow-hidden">
       <GlowOrb color="cyan" size={400} className="top-[20%] left-[-10%]" delay={2} />

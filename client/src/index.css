@@ -344,3 +344,12 @@ body {
   background-size: 400% 400%;
   animation: gradient-x 3s ease infinite;
 }
+
+/* ── Hide Scrollbar Utility ── */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}

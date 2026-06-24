@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { HiArrowRight, HiChevronLeft, HiChevronRight } from "react-icons/hi";
-import { projects } from "../data/portfolio";
+import { usePortfolio } from "../context/PortfolioContext";
 import Card from "./ui/Card";
 import SectionHeading from "./ui/SectionHeading";
 import { StaggerContainer, StaggerItem } from "./motion/StaggerContainer";
 
-const TABS = ["All", "Designer", "Manager"];
-
 export default function Projects({ onOpenCaseStudy }) {
+  const { projects, projectFilters } = usePortfolio();
+  const TABS = projectFilters || ["All", "Designer", "Manager"];
   const [activeTab, setActiveTab] = useState("All");
   const [hoveredId, setHoveredId] = useState(null);
   const [imageIndexes, setImageIndexes] = useState({});
@@ -121,9 +121,13 @@ export default function Projects({ onOpenCaseStudy }) {
                         className="group cursor-pointer h-full"
                         onMouseEnter={() => setHoveredId(project.id)}
                         onMouseLeave={() => setHoveredId(null)}
-                        onClick={() =>
-                          project.hasCaseStudy && onOpenCaseStudy?.(project.id)
-                        }
+                        onClick={() => {
+                          if (project.hasCaseStudy) {
+                            onOpenCaseStudy?.(project.id);
+                          } else if (project.projectUrl) {
+                            window.open(project.projectUrl, "_blank");
+                          }
+                        }}
                         whileHover={{ y: -8 }}
                         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                       >

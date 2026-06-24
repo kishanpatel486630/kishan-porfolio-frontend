@@ -7,7 +7,7 @@ import {
   HiChevronRight,
   HiArrowLeft,
 } from "react-icons/hi";
-import { projects } from "../data/portfolio";
+import { usePortfolio } from "../context/PortfolioContext";
 import Card from "../components/ui/Card";
 import SectionHeading from "../components/ui/SectionHeading";
 import {
@@ -16,9 +16,9 @@ import {
 } from "../components/motion/StaggerContainer";
 import Contact from "../components/Contact";
 
-const TABS = ["All", "Designer", "Manager"];
-
 export default function ProjectsPage({ onOpenCaseStudy }) {
+  const { projects, projectFilters } = usePortfolio();
+  const TABS = projectFilters || ["All", "Designer", "Manager"];
   const [activeTab, setActiveTab] = useState("All");
   const [hoveredId, setHoveredId] = useState(null);
   const [imageIndexes, setImageIndexes] = useState({});
@@ -128,10 +128,13 @@ export default function ProjectsPage({ onOpenCaseStudy }) {
                           className="group cursor-pointer h-full"
                           onMouseEnter={() => setHoveredId(project.id)}
                           onMouseLeave={() => setHoveredId(null)}
-                          onClick={() =>
-                            project.hasCaseStudy &&
-                            onOpenCaseStudy?.(project.id)
-                          }
+                          onClick={() => {
+                            if (project.hasCaseStudy) {
+                              onOpenCaseStudy?.(project.id);
+                            } else if (project.projectUrl) {
+                              window.open(project.projectUrl, "_blank");
+                            }
+                          }}
                           whileHover={{ y: -8 }}
                           transition={{
                             duration: 0.4,

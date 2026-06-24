@@ -41,6 +41,8 @@ export const clientLogos = [
   { name: "Notion", text: "Notion" },
 ];
 
+export const projectFilters = ["All", "Designer", "Manager"];
+
 export const projects = [
   {
     id: "nubiabarking",
@@ -49,10 +51,13 @@ export const projects = [
     description:
       "Nubia Parking is a smart mobile-based parking management system built to help security personnel manage vehicle entries, track slot availability, and monitor daily cash flow in real time.",
     image: "/images/nubia-parking-screens.png",
+    images: ["/images/nubia-parking-screens.png"],
     tags: ["Mobile App", "Parking", "Operations"],
     year: "2025",
     client: "Internal",
     hasCaseStudy: true,
+    role: "Designer",
+    projectUrl: "https://dribbble.com/kishanparvadiya",
   },
   {
     id: "evmcare",
@@ -61,10 +66,13 @@ export const projects = [
     description:
       "WorkHub is a mobile-first co-working space booking platform that allows users to discover, explore, and book workspaces such as private cabins, meeting rooms, and shared desks seamlessly.",
     image: "/images/workhub-coworking.png",
+    images: ["/images/workhub-coworking.png"],
     tags: ["Booking", "Co-Working", "Mobile App"],
     year: "2024",
     client: "WorkHub",
     hasCaseStudy: true,
+    role: "Manager",
+    projectUrl: "https://behance.net/kishanparvadiya",
   },
   {
     id: "leadmgmt",
@@ -81,6 +89,8 @@ export const projects = [
     year: "2024",
     client: "Corporate",
     hasCaseStudy: true,
+    role: "Designer",
+    projectUrl: "https://github.com/kishanpatel486630",
   },
   {
     id: "adrinoling",
@@ -89,10 +99,13 @@ export const projects = [
     description:
       "Adrenalinq is a comprehensive sports tournament management ecosystem for local communities and organizers, streamlining registration, live match tracking, and player auctions across mobile apps and web dashboards.",
     image: "/images/adrinoling-tournament.png",
+    images: ["/images/adrinoling-tournament.png"],
     tags: ["Sports", "Tournament", "Ecosystem"],
     year: "2025",
     client: "Adrenalinq",
     hasCaseStudy: true,
+    role: "Manager",
+    projectUrl: "https://behance.net/kishanparvadiya",
   },
   {
     id: "rkcredit",
@@ -101,14 +114,96 @@ export const projects = [
     description:
       "RK Credit First is a mobile-first financial platform that simplifies how users explore, apply for, and manage multiple credit cards in one unified ecosystem.",
     image: "/images/rk-credit-first.png",
+    images: ["/images/rk-credit-first.png"],
     tags: ["Fintech", "Credit Cards", "Mobile App"],
     year: "2024",
     client: "RK Bank",
     hasCaseStudy: true,
+    role: "Designer",
+    projectUrl: "https://dribbble.com/kishanparvadiya",
   },
 ];
 
 export const caseStudies = {
+  nubiabarking: {
+    id: "nubiabarking",
+    title: "Nubia Parking - Smart Parking Management System",
+    subtitle:
+      "A mobile-based system for real-time vehicle entry, slot tracking, and cash flow monitoring",
+    overview: `Nubia Parking is a smart mobile-based parking management system built to help security personnel manage vehicle entries, track slot availability, and monitor daily cash flow in real time. The product targets parking operations staff who need a fast, reliable tool to replace manual registers and paper-based logs.`,
+    role: "Product Designer (UI/UX Designer)",
+    timeline: "4-6 weeks",
+    team: "1 Product Designer (Me), 1 Flutter Developer, 1 Backend Developer",
+    tools: [
+      "Figma (UI/UX Design & Prototyping)",
+      "User Flow Mapping",
+      "Wireframing",
+    ],
+    sections: [
+      {
+        title: "Role & Responsibilities",
+        content: `As Product Designer, I led the complete design process from discovery to handoff.
+                  • Conducted stakeholder interviews with parking facility operators
+                  • Defined user flows for vehicle entry, slot tracking, and cash collection
+                  • Designed all mobile UI screens and interactive prototypes
+                  • Collaborated with Flutter developer for implementation`,
+      },
+      {
+        title: "The Problem",
+        content: `Parking facilities rely on manual processes that are error-prone and slow.
+                  • Vehicle entries recorded on paper ledgers
+                  • No real-time slot availability visibility
+                  • Cash collection tracked manually
+                  • Difficult to audit end-of-day reports
+                  • Security personnel lack a unified management tool`,
+      },
+      {
+        title: "Research & Discovery",
+        content: `I analyzed parking facility workflows and interviewed security personnel.
+                  • Staff need quick vehicle entry logging
+                  • Real-time slot status is critical during peak hours
+                  • Cash reconciliation is done at end of each shift
+                  • Mobile-first approach preferred over desktop
+                  • Minimal training time is essential for adoption`,
+      },
+      {
+        title: "Design Process",
+        content: `The core flow was designed as Login → Dashboard → Vehicle Entry → Slot View → Cash Summary.
+                  • Final UI Screens: 8
+                  • Clean dark-mode interface optimized for low-light parking environments
+                  • Quick entry form with plate number input and slot assignment
+                  • Live slot grid showing occupied and available spaces
+                  • Daily cash flow summary with entry count and revenue
+                  • Prototyped complete shift workflow from entry to end-of-day report`,
+      },
+      {
+        title: "Core Features",
+        content: `The app covers all critical parking operations in one interface.
+                  • Vehicle Entry Logging: quick plate number and slot assignment
+                  • Live Slot Map: visual grid of occupied vs. available slots
+                  • Cash Flow Dashboard: real-time revenue and entry count
+                  • Daily Reports: shift summary for audit and reconciliation
+                  • Search & Filter: find vehicle records quickly`,
+      },
+      {
+        title: "Results",
+        content: `The system significantly improved operational efficiency for parking staff.
+                  • Entry Logging Speed: 50% Faster
+                  • Errors in Records: Reduced
+                  • Cash Reconciliation: Simplified
+                  • Slot Visibility: Real-time
+                  • Staff Adoption: High`,
+      },
+      {
+        title: "Learnings",
+        content: `Operational tools succeed when they reduce cognitive load and match existing workflows.
+                  • Speed is the #1 priority for operations staff tools
+                  • Dark-mode UI works better in low-light parking environments
+                  • Minimal fields and quick actions drive adoption
+                  • Visual slot maps are more effective than list views`,
+      },
+    ],
+  },
   evmcare: {
     id: "evmcare",
     title: "WorkHub - Co-Working Space Booking App",

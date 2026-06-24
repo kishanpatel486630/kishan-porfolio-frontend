@@ -15,6 +15,7 @@ import About from "./components/About";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 import ProjectsPage from "./pages/ProjectsPage";
+import AdminPanel from "./pages/AdminPanel";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -82,6 +83,12 @@ export default function App() {
           path="/projects"
           element={
             <ProjectsPage onOpenCaseStudy={(id) => setActiveProjectId(id)} />
+          }
+        />
+        <Route
+          path="/kishan-admin"
+          element={
+            <AdminPanel />
           }
         />
       </Routes>

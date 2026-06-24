@@ -1,8 +1,12 @@
 import { FiLinkedin, FiGithub, FiTwitter, FiHeart } from "react-icons/fi";
 import { SiBehance } from "react-icons/si";
-import { personalInfo, navLinks } from "../data/portfolio";
+import { useLocation } from "react-router-dom";
+import { usePortfolio } from "../context/PortfolioContext";
 
 export default function Footer() {
+  const { personalInfo, navLinks } = usePortfolio();
+  const location = useLocation();
+  if (location.pathname.startsWith("/kishan-admin")) return null;
   const year = new Date().getFullYear();
 
   const socialLinks = [

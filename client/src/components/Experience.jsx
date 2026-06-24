@@ -1,11 +1,12 @@
 import { motion } from 'framer-motion';
 import { HiBriefcase } from 'react-icons/hi';
-import { experience } from '../data/portfolio';
+import { usePortfolio } from '../context/PortfolioContext';
 import SectionHeading from './ui/SectionHeading';
 import FadeInOnScroll from './motion/FadeInOnScroll';
 import GlowOrb from './ui/GlowOrb';
 
 export default function Experience() {
+  const { experience } = usePortfolio();
   return (
     <section id="experience" className="relative py-24 md:py-32 overflow-hidden">
       <GlowOrb color="purple" size={350} className="top-[20%] right-[-10%]" delay={1} />

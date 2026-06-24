@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { HiMail, HiLocationMarker, HiPhone } from "react-icons/hi";
 import { FiSend } from "react-icons/fi";
-import { personalInfo } from "../data/portfolio";
+import { usePortfolio } from "../context/PortfolioContext";
 import SectionHeading from "./ui/SectionHeading";
 import Card from "./ui/Card";
 import GlowOrb from "./ui/GlowOrb";
@@ -15,6 +15,7 @@ export default function Contact({
   title = "Get in Touch",
   subtitle = "Have an idea to implement for real? Let's create something extraordinary together.",
 }) {
+  const { personalInfo } = usePortfolio();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
