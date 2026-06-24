@@ -3,7 +3,7 @@ import * as staticData from "../data/portfolio";
 
 const PortfolioContext = createContext(null);
 
-const API_BASE_URL = "http://localhost:5000";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 export function PortfolioProvider({ children }) {
   const [data, setData] = useState({
