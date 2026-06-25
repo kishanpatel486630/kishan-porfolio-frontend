@@ -29,18 +29,37 @@ export function PortfolioProvider({ children }) {
         throw new Error("Failed to fetch dynamic portfolio data.");
       }
       const fetchedData = await res.json();
-      // Merge with safe defaults for fields that may be missing in older JSON
-      setData({
-        ...fetchedData,
-        projectFilters: fetchedData.projectFilters || ["All", "Designer", "Manager"],
-        caseStudies: fetchedData.caseStudies || {},
-        // Ensure each project has a role field
-        projects: (fetchedData.projects || []).map((p) => ({
+
+      // Prepend API_BASE_URL to any image paths starting with /uploads/
+      const processImagePath = (path) => {
+        if (typeof path === "string" && path.startsWith("/uploads/")) {
+          return `${API_BASE_URL}${path}`;
+        }
+        return path;
+      };
+
+      const processedPersonalInfo = {
+        ...fetchedData.personalInfo,
+        profileImage: processImagePath(fetchedData.personalInfo?.profileImage)
+      };
+
+      const processedProjects = (fetchedData.projects || []).map((p) => {
+        const rawImages = p.images || [p.image || ""];
+        return {
           role: "Designer",
           projectUrl: "",
-          images: [p.image],
           ...p,
-        })),
+          image: processImagePath(p.image),
+          images: rawImages.map(processImagePath),
+        };
+      });
+
+      setData({
+        ...fetchedData,
+        personalInfo: processedPersonalInfo,
+        projects: processedProjects,
+        projectFilters: fetchedData.projectFilters || ["All", "Designer", "Manager"],
+        caseStudies: fetchedData.caseStudies || {},
       });
       setError(null);
     } catch (err) {
@@ -58,13 +77,40 @@ export function PortfolioProvider({ children }) {
 
   const updatePortfolio = async (updatedData, token) => {
     try {
+      // Strip API_BASE_URL from any image paths starting with API_BASE_URL/uploads/
+      const stripImagePath = (path) => {
+        if (typeof path === "string" && path.startsWith(`${API_BASE_URL}/uploads/`)) {
+          return path.substring(API_BASE_URL.length);
+        }
+        return path;
+      };
+
+      const strippedPersonalInfo = {
+        ...updatedData.personalInfo,
+        profileImage: stripImagePath(updatedData.personalInfo?.profileImage)
+      };
+
+      const strippedProjects = (updatedData.projects || []).map((p) => {
+        return {
+          ...p,
+          image: stripImagePath(p.image),
+          images: (p.images || []).map(stripImagePath),
+        };
+      });
+
+      const dataToSave = {
+        ...updatedData,
+        personalInfo: strippedPersonalInfo,
+        projects: strippedProjects
+      };
+
       const res = await fetch(`${API_BASE_URL}/api/portfolio`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(updatedData),
+        body: JSON.stringify(dataToSave),
       });
 
       const result = await res.json();
@@ -72,7 +118,36 @@ export function PortfolioProvider({ children }) {
         throw new Error(result.error || "Failed to update portfolio data.");
       }
 
-      setData(updatedData);
+      // Process and set local state with prepended URLs so client-side state is consistent
+      const processImagePath = (path) => {
+        if (typeof path === "string" && path.startsWith("/uploads/")) {
+          return `${API_BASE_URL}${path}`;
+        }
+        return path;
+      };
+
+      const processedPersonalInfo = {
+        ...updatedData.personalInfo,
+        profileImage: processImagePath(updatedData.personalInfo?.profileImage)
+      };
+
+      const processedProjects = (updatedData.projects || []).map((p) => {
+        const rawImages = p.images || [p.image || ""];
+        return {
+          role: "Designer",
+          projectUrl: "",
+          ...p,
+          image: processImagePath(p.image),
+          images: rawImages.map(processImagePath),
+        };
+      });
+
+      setData({
+        ...updatedData,
+        personalInfo: processedPersonalInfo,
+        projects: processedProjects
+      });
+
       return { success: true };
     } catch (err) {
       console.error("❌ Error updating portfolio:", err);

@@ -84,6 +84,7 @@ function ImageUploadField({ label, value, onChange, apiBaseUrl, showToast }) {
   const getPreviewUrl = (url) => {
     if (!url) return "";
     if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("data:")) return url;
+    if (url.startsWith("/uploads/")) return `${apiBaseUrl}${url}`;
     return url;
   };
 
@@ -2031,20 +2032,24 @@ export default function AdminPanel() {
                         const reader = new FileReader();
                         reader.readAsDataURL(file);
                         reader.onload = async () => {
-                          const base64Content = reader.result;
-                          const token = localStorage.getItem("adminToken");
-                          const res = await fetch(`${apiBaseUrl}/api/admin/upload`, {
-                            method: "POST",
-                            headers: { 
-                              "Content-Type": "application/json",
-                              "Authorization": `Bearer ${token}`
-                            },
-                            body: JSON.stringify({ filename: file.name, base64: base64Content }),
-                          });
-                          const data = await res.json();
-                          if (!res.ok) throw new Error(data.error || "Upload failed");
-                          showToast("Photo uploaded successfully!");
-                          fetchGalleryPhotos();
+                          try {
+                            const base64Content = reader.result;
+                            const token = localStorage.getItem("adminToken");
+                            const res = await fetch(`${apiBaseUrl}/api/admin/upload`, {
+                              method: "POST",
+                              headers: { 
+                                "Content-Type": "application/json",
+                                "Authorization": `Bearer ${token}`
+                              },
+                              body: JSON.stringify({ filename: file.name, base64: base64Content }),
+                            });
+                            const data = await res.json();
+                            if (!res.ok) throw new Error(data.error || "Upload failed");
+                            showToast("Photo uploaded successfully!");
+                            fetchGalleryPhotos();
+                          } catch (err) {
+                            showToast(err.message, "error");
+                          }
                         };
                       } catch (err) {
                         showToast(err.message, "error");
@@ -2071,12 +2076,14 @@ export default function AdminPanel() {
                   {galleryPhotos.map((photo, idx) => {
                     const filename = photo.name || (typeof photo === "string" ? photo.split("/").pop() : "");
                     const pathUrl = photo.path || (typeof photo === "string" ? photo : "");
+                    const isUploaded = photo.type === "uploaded" || (typeof photo === "string" && photo.startsWith("/uploads/"));
+                    const fullPathUrl = isUploaded ? `${apiBaseUrl}${pathUrl}` : pathUrl;
                     const isLargeFile = photo.bytes > 500 * 1024 || (photo.size && (photo.size.includes("MB") || photo.size.includes("GB")));
                     return (
                       <div key={idx} className="glass rounded-2xl border border-border overflow-hidden flex flex-col group relative">
                         {/* Image Preview Box */}
                         <div className="aspect-[4/3] w-full bg-bg-primary overflow-hidden relative border-b border-border flex items-center justify-center">
-                          <img src={pathUrl} alt={filename} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+                          <img src={fullPathUrl} alt={filename} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
                           
                           {/* Quick Delete Overlay Button */}
                           <button
