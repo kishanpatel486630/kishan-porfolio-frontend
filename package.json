@@ -3,10 +3,10 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "setup": "npm install --prefix backend && npm install --prefix client && npm install",
-    "dev": "concurrently -n backend,client -c cyan,magenta \"npm run dev --prefix backend\" \"npm run dev --prefix client\"",
+    "setup": "npm install --prefix backend && npm install --prefix Frontend && npm install",
+    "dev": "concurrently -n backend,Frontend -c cyan,magenta \"npm run dev --prefix backend\" \"npm run dev --prefix Frontend\"",
     "dev:server": "npm run dev --prefix backend",
-    "dev:client": "npm run dev --prefix client"
+    "dev:client": "npm run dev --prefix Frontend"
   },
   "dependencies": {
     "nodemailer": "^6.10.1"

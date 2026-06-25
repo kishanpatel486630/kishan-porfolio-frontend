@@ -1,7 +1,7 @@
 {
-  "buildCommand": "cd client && npm run build",
-  "outputDirectory": "client/dist",
-  "installCommand": "cd client && npm install",
+  "buildCommand": "cd Frontend && npm run build",
+  "outputDirectory": "Frontend/dist",
+  "installCommand": "cd Frontend && npm install",
   "framework": "vite",
   "rewrites": [
     { "source": "/api/contact", "destination": "/api/contact" },

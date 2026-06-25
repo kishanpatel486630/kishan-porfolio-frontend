@@ -154,6 +154,7 @@ export default function AdminPanel() {
     stats,
     projectFilters,
     updatePortfolio,
+    refreshPortfolio,
     apiBaseUrl,
   } = usePortfolio();
 
@@ -172,6 +173,24 @@ export default function AdminPanel() {
   const [isSaving, setIsSaving] = useState(false);
   const [galleryPhotos, setGalleryPhotos] = useState([]);
   const [isLoadingPhotos, setIsLoadingPhotos] = useState(false);
+
+  const hasUnsavedChanges = () => {
+    if (!editData) return false;
+    const currentSerialized = JSON.stringify({
+      personalInfo,
+      navLinks,
+      clientLogos,
+      projects,
+      caseStudies,
+      skills,
+      experience,
+      education,
+      stats,
+      projectFilters: projectFilters || ["All", "Designer", "Manager"],
+    });
+    const editSerialized = JSON.stringify(editData);
+    return currentSerialized !== editSerialized;
+  };
 
   // Active sub-item indices for selection in UI
   const [selectedProjectId, setSelectedProjectId] = useState(null);
@@ -312,6 +331,7 @@ export default function AdminPanel() {
   // Handle Global Save changes to Database
   const handleSaveChanges = async () => {
     if (!editData) return;
+    if (!window.confirm("Are you sure you want to save all changes to your portfolio database?")) return;
 
     try {
       setIsSaving(true);
@@ -516,6 +536,13 @@ export default function AdminPanel() {
         <div className="p-4 border-t border-border flex flex-col gap-2">
           <a
             href="/"
+            onClick={(e) => {
+              if (hasUnsavedChanges()) {
+                if (!window.confirm("You have unsaved changes. Navigating to the website will open it in a new tab, but your pending changes won't be visible until you click 'Save Changes'. Proceed?")) {
+                  e.preventDefault();
+                }
+              }
+            }}
             target="_blank"
             rel="noreferrer"
             className="w-full px-4 py-3 rounded-xl border border-border text-center text-sm font-semibold hover:bg-bg-primary flex items-center justify-center gap-2 transition"
@@ -523,7 +550,11 @@ export default function AdminPanel() {
             <HiEye /> View Website
           </a>
           <button
-            onClick={handleLogout}
+            onClick={() => {
+              if (window.confirm("Are you sure you want to log out? Any unsaved changes will be lost.")) {
+                handleLogout();
+              }
+            }}
             className="w-full px-4 py-3 rounded-xl bg-error/10 text-error hover:bg-error hover:text-white text-sm font-semibold flex items-center justify-center gap-2 cursor-pointer transition"
           >
             <HiLogout /> Logout
@@ -576,6 +607,7 @@ export default function AdminPanel() {
             </span>
             <button
               onClick={() => {
+                if (!window.confirm("Are you sure you want to discard all pending changes? This will reset all fields to the last saved database state.")) return;
                 setEditData(JSON.parse(JSON.stringify({
                   personalInfo,
                   navLinks,
@@ -849,9 +881,11 @@ export default function AdminPanel() {
                             <button
                               type="button"
                               onClick={() => {
-                                const updatedFilters = editData.projectFilters.filter((f) => f !== filter);
-                                setEditData({ ...editData, projectFilters: updatedFilters });
-                                showToast(`Removed filter: ${filter}`);
+                                if (window.confirm(`Are you sure you want to remove the category filter "${filter}"?`)) {
+                                  const updatedFilters = editData.projectFilters.filter((f) => f !== filter);
+                                  setEditData({ ...editData, projectFilters: updatedFilters });
+                                  showToast(`Removed filter: ${filter}`);
+                                }
                               }}
                               className="text-text-muted hover:text-error transition cursor-pointer"
                             >
@@ -871,10 +905,12 @@ export default function AdminPanel() {
                                 showToast("Category already exists", "error");
                                 return;
                               }
-                              const updatedFilters = [...editData.projectFilters, val];
-                              setEditData({ ...editData, projectFilters: updatedFilters });
-                              e.target.value = "";
-                              showToast(`Added filter: ${val}`);
+                              if (window.confirm(`Are you sure you want to add "${val}" as a new project category filter?`)) {
+                                const updatedFilters = [...editData.projectFilters, val];
+                                setEditData({ ...editData, projectFilters: updatedFilters });
+                                e.target.value = "";
+                                showToast(`Added filter: ${val}`);
+                              }
                             }
                           }}
                           className="px-3 py-1 text-xs rounded-xl bg-bg-primary border border-border text-text-primary focus:outline-none focus:border-gradient-start transition"
@@ -888,27 +924,29 @@ export default function AdminPanel() {
                     <span className="text-text-muted text-sm font-medium">Select a project to edit its fields and case study.</span>
                     <button
                       onClick={() => {
-                        const newId = `project_${Date.now()}`;
-                        const newProj = {
-                          id: newId,
-                          title: "New Project",
-                          category: "Description of Category",
-                          description: "Project summary description goes here.",
-                          image: "/images/nubia-parking-screens.png",
-                          images: ["/images/nubia-parking-screens.png"],
-                          tags: ["Figma", "Mobile App"],
-                          year: new Date().getFullYear().toString(),
-                          client: "Self",
-                          hasCaseStudy: false,
-                          role: "Designer",
-                          projectUrl: "",
-                        };
-                        setEditData({
-                          ...editData,
-                          projects: [...editData.projects, newProj],
-                        });
-                        setSelectedProjectId(newId);
-                        showToast("Created empty project card");
+                        if (window.confirm("Are you sure you want to add a new project entry?")) {
+                          const newId = `project_${Date.now()}`;
+                          const newProj = {
+                            id: newId,
+                            title: "New Project",
+                            category: "Description of Category",
+                            description: "Project summary description goes here.",
+                            image: "/images/nubia-parking-screens.png",
+                            images: ["/images/nubia-parking-screens.png"],
+                            tags: ["Figma", "Mobile App"],
+                            year: new Date().getFullYear().toString(),
+                            client: "Self",
+                            hasCaseStudy: false,
+                            role: "Designer",
+                            projectUrl: "",
+                          };
+                          setEditData({
+                            ...editData,
+                            projects: [...editData.projects, newProj],
+                          });
+                          setSelectedProjectId(newId);
+                          showToast("Created empty project card");
+                        }
                       }}
                       className="px-4 py-2 rounded-xl bg-gradient-start hover:bg-gradient-end text-white text-sm font-bold flex items-center gap-2 cursor-pointer transition shadow-md"
                     >
@@ -934,7 +972,11 @@ export default function AdminPanel() {
 
                         <div className="flex items-center gap-2">
                           <button
-                            onClick={() => setSelectedProjectId(proj.id)}
+                            onClick={() => {
+                              if (window.confirm(`Do you want to edit details for the project "${proj.title}"?`)) {
+                                setSelectedProjectId(proj.id);
+                              }
+                            }}
                             className="px-4 py-2 rounded-xl border border-border text-sm font-bold hover:bg-bg-primary transition cursor-pointer"
                           >
                             Edit Entry
@@ -1102,10 +1144,12 @@ export default function AdminPanel() {
                           <button
                             type="button"
                             onClick={() => {
-                              const updatedImages = [...(proj.images || [proj.image || ""])];
-                              updatedImages.push("");
-                              updateField("images", updatedImages);
-                              showToast("Added new screenshot item");
+                              if (window.confirm("Are you sure you want to add a new screenshot photo slot?")) {
+                                const updatedImages = [...(proj.images || [proj.image || ""])];
+                                updatedImages.push("");
+                                updateField("images", updatedImages);
+                                showToast("Added new screenshot item");
+                              }
                             }}
                             className="px-3 py-1.5 rounded-lg border border-border hover:bg-bg-primary text-xs font-bold flex items-center gap-1 cursor-pointer transition"
                           >
@@ -1118,6 +1162,7 @@ export default function AdminPanel() {
                               <button
                                 type="button"
                                 onClick={() => {
+                                  if (!window.confirm("Are you sure you want to remove this screenshot?")) return;
                                   const updatedImages = (proj.images || [proj.image]).filter((_, idx) => idx !== imgIdx);
                                   updateField("images", updatedImages);
                                   showToast("Removed screenshot");
@@ -1309,15 +1354,17 @@ export default function AdminPanel() {
                               <h4 className="font-bold text-md text-text-primary">Case Study Sections</h4>
                               <button
                                 onClick={() => {
-                                  const updatedSections = [
-                                    ...(editData.caseStudies[proj.id].sections || []),
-                                    { title: "New Section", content: "Describe content here" },
-                                  ];
-                                  const updatedCase = { ...editData.caseStudies[proj.id], sections: updatedSections };
-                                  setEditData({
-                                    ...editData,
-                                    caseStudies: { ...editData.caseStudies, [proj.id]: updatedCase },
-                                  });
+                                  if (window.confirm("Are you sure you want to add a new case study section?")) {
+                                    const updatedSections = [
+                                      ...(editData.caseStudies[proj.id].sections || []),
+                                      { title: "New Section", content: "Describe content here" },
+                                    ];
+                                    const updatedCase = { ...editData.caseStudies[proj.id], sections: updatedSections };
+                                    setEditData({
+                                      ...editData,
+                                      caseStudies: { ...editData.caseStudies, [proj.id]: updatedCase },
+                                    });
+                                  }
                                 }}
                                 className="px-3 py-1.5 rounded-lg border border-border hover:bg-bg-primary text-xs font-bold flex items-center gap-1 cursor-pointer transition"
                               >
@@ -1329,14 +1376,16 @@ export default function AdminPanel() {
                               <div key={secIdx} className="p-4 rounded-xl border border-border bg-bg-primary relative group">
                                 <button
                                   onClick={() => {
-                                    const updatedSections = (editData.caseStudies[proj.id].sections || []).filter(
-                                      (_, idx) => idx !== secIdx
-                                    );
-                                    const updatedCase = { ...editData.caseStudies[proj.id], sections: updatedSections };
-                                    setEditData({
-                                      ...editData,
-                                      caseStudies: { ...editData.caseStudies, [proj.id]: updatedCase },
-                                    });
+                                    if (window.confirm("Are you sure you want to remove this case study section?")) {
+                                      const updatedSections = (editData.caseStudies[proj.id].sections || []).filter(
+                                        (_, idx) => idx !== secIdx
+                                      );
+                                      const updatedCase = { ...editData.caseStudies[proj.id], sections: updatedSections };
+                                      setEditData({
+                                        ...editData,
+                                        caseStudies: { ...editData.caseStudies, [proj.id]: updatedCase },
+                                      });
+                                    }
                                   }}
                                   className="absolute top-4 right-4 p-1 text-text-muted hover:text-error hover:bg-error/10 rounded-lg cursor-pointer transition"
                                 >
@@ -1395,15 +1444,17 @@ export default function AdminPanel() {
                 <span className="text-text-muted text-sm font-medium">Manage categorised design and tech proficiency levels.</span>
                 <button
                   onClick={() => {
-                    const newCategory = {
-                      category: "New Skill Area",
-                      items: [{ name: "Skill Name", level: 80 }],
-                    };
-                    setEditData({
-                      ...editData,
-                      skills: [...editData.skills, newCategory],
-                    });
-                    showToast("Created new skill category card");
+                    if (window.confirm("Are you sure you want to add a new skill category group?")) {
+                      const newCategory = {
+                        category: "New Skill Area",
+                        items: [{ name: "Skill Name", level: 80 }],
+                      };
+                      setEditData({
+                        ...editData,
+                        skills: [...editData.skills, newCategory],
+                      });
+                      showToast("Created new skill category card");
+                    }
                   }}
                   className="px-4 py-2 bg-gradient-start text-white rounded-xl text-sm font-bold flex items-center gap-2 cursor-pointer transition shadow"
                 >
@@ -1483,6 +1534,7 @@ export default function AdminPanel() {
 
                           <button
                             onClick={() => {
+                              if (!window.confirm(`Are you sure you want to remove the skill "${item.name || 'this skill'}"?`)) return;
                               const updatedSkills = [...editData.skills];
                               updatedSkills[gi].items = updatedSkills[gi].items.filter((_, idx) => idx !== ii);
                               setEditData({ ...editData, skills: updatedSkills });
@@ -1497,9 +1549,11 @@ export default function AdminPanel() {
 
                       <button
                         onClick={() => {
-                          const updatedSkills = [...editData.skills];
-                          updatedSkills[gi].items.push({ name: "New Skill", level: 80 });
-                          setEditData({ ...editData, skills: updatedSkills });
+                          if (window.confirm("Are you sure you want to add a new competency item to this skill group?")) {
+                            const updatedSkills = [...editData.skills];
+                            updatedSkills[gi].items.push({ name: "New Skill", level: 80 });
+                            setEditData({ ...editData, skills: updatedSkills });
+                          }
                         }}
                         className="mt-2 text-xs font-bold text-gradient-start hover:text-gradient-end flex items-center gap-1 cursor-pointer transition"
                       >
@@ -1519,19 +1573,21 @@ export default function AdminPanel() {
                 <span className="text-text-muted text-sm font-medium">Log chronological professional employment experience.</span>
                 <button
                   onClick={() => {
-                    const newExp = {
-                      title: "New Role",
-                      company: "Company Name",
-                      location: "City, Country",
-                      period: "Month Year — Present",
-                      description: "Brief summary of role responsibilities.",
-                      highlights: ["Added a major feature", "Led team of developers"],
-                    };
-                    setEditData({
-                      ...editData,
-                      experience: [newExp, ...editData.experience],
-                    });
-                    showToast("Added new experience entry");
+                    if (window.confirm("Are you sure you want to add a new work experience entry?")) {
+                      const newExp = {
+                        title: "New Role",
+                        company: "Company Name",
+                        location: "City, Country",
+                        period: "Month Year — Present",
+                        description: "Brief summary of role responsibilities.",
+                        highlights: ["Added a major feature", "Led team of developers"],
+                      };
+                      setEditData({
+                        ...editData,
+                        experience: [newExp, ...editData.experience],
+                      });
+                      showToast("Added new experience entry");
+                    }
                   }}
                   className="px-4 py-2 bg-gradient-start text-white rounded-xl text-sm font-bold flex items-center gap-2 cursor-pointer transition shadow"
                 >
@@ -1651,6 +1707,7 @@ export default function AdminPanel() {
                           />
                           <button
                             onClick={() => {
+                              if (!window.confirm("Are you sure you want to remove this highlight bullet?")) return;
                               const updatedExp = [...editData.experience];
                               updatedExp[idx].highlights = updatedExp[idx].highlights.filter((_, i) => i !== hlIdx);
                               setEditData({ ...editData, experience: updatedExp });
@@ -1664,10 +1721,12 @@ export default function AdminPanel() {
 
                       <button
                         onClick={() => {
-                          const updatedExp = [...editData.experience];
-                          if (!updatedExp[idx].highlights) updatedExp[idx].highlights = [];
-                          updatedExp[idx].highlights.push("New highlight");
-                          setEditData({ ...editData, experience: updatedExp });
+                          if (window.confirm("Are you sure you want to add a new highlight bullet point?")) {
+                            const updatedExp = [...editData.experience];
+                            if (!updatedExp[idx].highlights) updatedExp[idx].highlights = [];
+                            updatedExp[idx].highlights.push("New highlight");
+                            setEditData({ ...editData, experience: updatedExp });
+                          }
                         }}
                         className="text-xs font-bold text-gradient-start hover:text-gradient-end flex items-center gap-1 cursor-pointer transition mt-1"
                       >
@@ -1687,20 +1746,22 @@ export default function AdminPanel() {
                 <span className="text-text-muted text-sm font-medium">Add educational degrees, diplomas, and official industry certifications.</span>
                 <button
                   onClick={() => {
-                    const newEdu = {
-                      degree: "Degree / Certification Title",
-                      field: "Field of Study",
-                      institution: "Institution / Academy name",
-                      location: "Location name",
-                      period: "2024 — 2026",
-                      description: "Brief summary description.",
-                      achievements: ["Grade: 9.0 CGPA"],
-                    };
-                    setEditData({
-                      ...editData,
-                      education: [...editData.education, newEdu],
-                    });
-                    showToast("Added education entry");
+                    if (window.confirm("Are you sure you want to add a new educational/certification entry?")) {
+                      const newEdu = {
+                        degree: "Degree / Certification Title",
+                        field: "Field of Study",
+                        institution: "Institution / Academy name",
+                        location: "Location name",
+                        period: "2024 — 2026",
+                        description: "Brief summary description.",
+                        achievements: ["Grade: 9.0 CGPA"],
+                      };
+                      setEditData({
+                        ...editData,
+                        education: [...editData.education, newEdu],
+                      });
+                      showToast("Added education entry");
+                    }
                   }}
                   className="px-4 py-2 bg-gradient-start text-white rounded-xl text-sm font-bold flex items-center gap-2 cursor-pointer transition shadow"
                 >
@@ -1835,6 +1896,7 @@ export default function AdminPanel() {
                           />
                           <button
                             onClick={() => {
+                              if (!window.confirm("Are you sure you want to remove this achievement bullet?")) return;
                               const updatedEdu = [...editData.education];
                               updatedEdu[idx].achievements = updatedEdu[idx].achievements.filter((_, i) => i !== achIdx);
                               setEditData({ ...editData, education: updatedEdu });
@@ -1848,10 +1910,12 @@ export default function AdminPanel() {
 
                       <button
                         onClick={() => {
-                          const updatedEdu = [...editData.education];
-                          if (!updatedEdu[idx].achievements) updatedEdu[idx].achievements = [];
-                          updatedEdu[idx].achievements.push("New Achievement");
-                          setEditData({ ...editData, education: updatedEdu });
+                          if (window.confirm("Are you sure you want to add a new achievement bullet point?")) {
+                            const updatedEdu = [...editData.education];
+                            if (!updatedEdu[idx].achievements) updatedEdu[idx].achievements = [];
+                            updatedEdu[idx].achievements.push("New Achievement");
+                            setEditData({ ...editData, education: updatedEdu });
+                          }
                         }}
                         className="text-xs font-bold text-gradient-start hover:text-gradient-end flex items-center gap-1 cursor-pointer transition mt-1"
                       >
@@ -1871,15 +1935,17 @@ export default function AdminPanel() {
                 <span className="text-text-muted text-sm font-medium">Modify stats boxes displayed inside the Hero/Footer sections.</span>
                 <button
                   onClick={() => {
-                    const newStat = {
-                      value: "99%",
-                      label: "Stat Label",
-                    };
-                    setEditData({
-                      ...editData,
-                      stats: [...editData.stats, newStat],
-                    });
-                    showToast("Added homepage stat panel");
+                    if (window.confirm("Are you sure you want to add a new homepage stat box?")) {
+                      const newStat = {
+                        value: "99%",
+                        label: "Stat Label",
+                      };
+                      setEditData({
+                        ...editData,
+                        stats: [...editData.stats, newStat],
+                      });
+                      showToast("Added homepage stat panel");
+                    }
                   }}
                   className="px-4 py-2 bg-gradient-start text-white rounded-xl text-sm font-bold flex items-center gap-2 cursor-pointer transition shadow"
                 >
@@ -1893,6 +1959,7 @@ export default function AdminPanel() {
                     {/* Delete Stat Button */}
                     <button
                       onClick={() => {
+                        if (!window.confirm("Are you sure you want to delete this stat box?")) return;
                         setEditData({
                           ...editData,
                           stats: editData.stats.filter((_, i) => i !== idx),
@@ -2029,6 +2096,39 @@ export default function AdminPanel() {
                                 const data = await res.json();
                                 if (!res.ok) throw new Error(data.error || "Failed to delete file");
                                 showToast("Photo deleted successfully!");
+
+                                // Clean up client-side local edit state (editData) to keep it in sync
+                                setEditData((prev) => {
+                                  if (!prev) return prev;
+                                  
+                                  const updatedPersonalInfo = { ...prev.personalInfo };
+                                  if (updatedPersonalInfo.profileImage === pathUrl) {
+                                    updatedPersonalInfo.profileImage = "";
+                                  }
+
+                                  const updatedProjects = prev.projects.map((proj) => {
+                                    const updatedProj = { ...proj };
+                                    if (updatedProj.image === pathUrl) {
+                                      updatedProj.image = "";
+                                    }
+                                    if (Array.isArray(updatedProj.images)) {
+                                      updatedProj.images = updatedProj.images.filter((img) => img !== pathUrl);
+                                    }
+                                    return updatedProj;
+                                  });
+
+                                  return {
+                                    ...prev,
+                                    personalInfo: updatedPersonalInfo,
+                                    projects: updatedProjects,
+                                  };
+                                });
+
+                                // Refresh context so other parts of the site reflect the delete
+                                if (typeof refreshPortfolio === "function") {
+                                  await refreshPortfolio();
+                                }
+
                                 fetchGalleryPhotos();
                               } catch (err) {
                                 showToast(err.message, "error");

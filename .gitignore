@@ -8,3 +8,7 @@ client/.env
 client/.env.local
 backend/uploads/
 client/public/uploads/
+
+# Ignore backend directories entirely for repo separation
+backend/
+api/
